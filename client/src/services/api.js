@@ -25,7 +25,6 @@ class ApiService {
 }
 
 function processCollectionResponse(response) {
-    console.log('---', response)
     return response.docs.map(doc => ({ ...doc.data(), id: doc.id }))
 }
 
