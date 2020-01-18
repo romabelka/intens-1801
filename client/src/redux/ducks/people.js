@@ -139,7 +139,7 @@ export const cancalableSyncSaga = function *() {
 */
 }
 
-const createEventChannel = () => eventChannel((emit) => apiService.onPeopleChange(people => emit(people)))
+const createEventChannel = () => eventChannel(apiService.onPeopleChange)
 
 export const realtimeSyncSaga = function * () {
     const chanel = yield call(createEventChannel)
@@ -161,6 +161,6 @@ export function* saga() {
     yield all([
 //        syncPeopleWithPolling(),
         takeEvery(ADD_PERSON_REQUEST, addPersonSaga),
-//        takeEvery(FETCH_PEOPLE_REQUEST, fetchPeopleSaga)
+//        takeEvery(FETCH_PEOPLE_REQUEST, fetchPeopleSaga),
     ])
 }
