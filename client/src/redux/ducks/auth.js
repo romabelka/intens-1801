@@ -1,4 +1,4 @@
-import {put, call, takeEvery} from 'redux-saga/effects'
+import {put, call, takeEvery, select} from 'redux-saga/effects'
 import {appName} from '../../config'
 import {Record} from 'immutable'
 import apiService from '../../services/api'
@@ -6,7 +6,7 @@ import apiService from '../../services/api'
 /**
  * Constants
  * */
-export const moduleName = ''
+export const moduleName = 'auth'
 const prefix = `${appName}/${moduleName}`
 
 
@@ -48,6 +48,7 @@ export default function reducer(state = new ReducerRecord(), action) {
         case SIGN_UP_ERROR:
             return state
                 .set('error', error.message)
+                .set('loading', false)
 
         default:
             return state
@@ -59,6 +60,7 @@ export default function reducer(state = new ReducerRecord(), action) {
  * */
 
 export const userSelector = state => state[moduleName].user
+export const loadingSelector = state => state[moduleName].loading
 export const errorSelector = state => state[moduleName].error
 
 /**
@@ -79,9 +81,15 @@ export function signUp({email, password}) {
 export function * signUpSaga(action) {
     const { email, password } = action.payload
 
+    const loading = yield select(loadingSelector)
+
     yield put({
         type: SIGN_UP_START
     })
+
+    if (loading) {
+        return;
+    }
 
     try {
         const user = yield call(apiService.signUp, email, password)
