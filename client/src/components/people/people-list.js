@@ -25,7 +25,7 @@ export class PeopleList extends Component {
                 {
                     this.props.people.map(person => (
                         <li key={person.id} data-test="people-list-item"
-                            className={this.state.selectedId === person.id ? 'active' : ''}
+                            className={this.state.selectedId === person.id ? 'active-item' : ''}
                             onClick = {this.select(person.id)}
                         >
                             {person.email}

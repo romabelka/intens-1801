@@ -1,6 +1,6 @@
 import React from 'react'
 import {mount} from 'enzyme'
-import {PeopleList} from './people-list'
+import createDriver from './people-list.driver'
 
 const people = [
     {
@@ -18,26 +18,27 @@ const people = [
 
 describe('PeopleList', () => {
     it('should render a list', () => {
-        const component = mount(<PeopleList people={people} fetchPeople={() => {}}/>)
+        const driver = createDriver({ people })
 
-        expect(component.find(`[data-test="people-list-item"]`).length).toEqual(people.length)
+        expect(driver.get.listItems().length).toEqual(people.length)
     });
 
     it('should call fetchPeople', () => {
-        const fn = jest.fn()
-        mount(<PeopleList people={[]} fetchPeople={fn}/>)
+        const fetchPeople = jest.fn()
 
-        expect(fn.mock.calls.length).toEqual(1)
+        createDriver({ fetchPeople })
+
+        expect(fetchPeople.mock.calls.length).toEqual(1)
     });
 
     it('should select person', () => {
-        const component = mount(<PeopleList people={people} fetchPeople={() => {}}/>)
+        const driver = createDriver({ people })
 
-        expect(component.find(`[data-test="people-list-item"]`).at(0).hasClass('active')).toEqual(false)
+        expect(driver.get.isItemActive(0)).toEqual(false)
 
-        component.find(`[data-test="people-list-item"]`).at(0).simulate('click')
+        driver.when.itemClicked(0)
 
-        expect(component.find(`[data-test="people-list-item"]`).at(0).hasClass('active')).toEqual(true)
+        expect(driver.get.isItemActive(0)).toEqual(true)
 
     });
 });
