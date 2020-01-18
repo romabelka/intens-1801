@@ -1,10 +1,15 @@
 import React from 'react'
-import {PeopleList} from './people-list'
+import PeopleList from './people-list'
 import {mount} from "enzyme";
+import {Provider} from "react-redux";
+import createStore from '../../redux';
 
 export default (initialProps = {}) => {
-    const props = { people: [], fetchPeople: () => {}, ...initialProps}
-    const component = mount(<PeopleList {...props} />)
+    const component = mount(
+        <Provider store={createStore()}>
+            <PeopleList {...initialProps} />
+        </Provider>
+    )
 
     return {
         get: {
@@ -14,6 +19,7 @@ export default (initialProps = {}) => {
         },
         when: {
             itemClicked: (index) => component.find(`[data-test="people-list-item"]`).at(index).simulate('click')
-        }
+        },
+        update: () => component.update()
     }
 }

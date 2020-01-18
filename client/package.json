@@ -48,7 +48,8 @@
     "enzyme-adapter-react-16": "^1.15.2",
     "husky": "^4.0.10",
     "lint-staged": "^9.5.0",
-    "prettier": "^1.19.1"
+    "prettier": "^1.19.1",
+    "wix-eventually": "^2.2.0"
   },
   "husky": {
     "hooks": {

@@ -7,14 +7,17 @@ import history from '../history'
 import {init as authInit} from './ducks/auth'
 import rootSaga from './saga'
 
-const sagaMiddleware = createSagaMiddleware()
 
-const enhancer = applyMiddleware(sagaMiddleware, routerMiddleware(history), logger)
+export default () => {
+    const sagaMiddleware = createSagaMiddleware()
 
-const store = createStore(reducer, enhancer)
+    const enhancer = applyMiddleware(sagaMiddleware, routerMiddleware(history))
 
-sagaMiddleware.run(rootSaga)
+    const store = createStore(reducer, enhancer)
 
-authInit(store)
+    sagaMiddleware.run(rootSaga)
 
-export default store
+    authInit(store)
+
+    return store
+}
