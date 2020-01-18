@@ -1,4 +1,5 @@
-import {all, put, call, takeEvery, delay, fork, spawn, cancel, cancelled, race} from 'redux-saga/effects'
+import {all, put, call, takeEvery, delay, fork, spawn, cancel, cancelled, race, take} from 'redux-saga/effects'
+import {eventChannel} from 'redux-saga'
 import {appName} from '../../config'
 import {OrderedMap, Record} from 'immutable'
 import apiService from '../../services/api'
@@ -19,6 +20,7 @@ export const FETCH_PEOPLE_START = `${prefix}/FETCH_PEOPLE_START`
 export const FETCH_PEOPLE_SUCCESS = `${prefix}/FETCH_PEOPLE_SUCCESS`
 export const FETCH_PEOPLE_ERROR = `${prefix}/FETCH_PEOPLE_ERROR`
 
+export const REALTIME_PEOPLE_UPDATE = `${prefix}/REALTIME_PEOPLE_UPDATE`
 /**
  * Reducer
  * */
@@ -42,6 +44,7 @@ export default function reducer(state = new ReducerRecord(), action) {
         case FETCH_PEOPLE_START:
             return state.set('loading', true)
 
+        case REALTIME_PEOPLE_UPDATE:
         case FETCH_PEOPLE_SUCCESS:
             return state
                 .set('loading', false)
@@ -136,8 +139,23 @@ export const cancalableSyncSaga = function *() {
 */
 }
 
+const createEventChannel = () => eventChannel((emit) => apiService.onPeopleChange(people => emit(people)))
+
+export const realtimeSyncSaga = function * () {
+    const chanel = yield call(createEventChannel)
+
+    while (true) {
+        const people = yield take(chanel)
+
+        yield put({
+            type: REALTIME_PEOPLE_UPDATE,
+            payload: { people }
+        })
+    }
+}
+
 export function* saga() {
-    yield spawn(cancalableSyncSaga)
+    yield spawn(realtimeSyncSaga)
 //    yield spawn(takeEvery, ADD_PERSON_REQUEST, addPersonSaga)
 
     yield all([

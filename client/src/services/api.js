@@ -21,6 +21,10 @@ class ApiService {
         .get()
         .then(processCollectionResponse)
 
+    onPeopleChange = (callback) => this.fb.firestore()
+        .collection('people')
+        .onSnapshot(data => callback(processCollectionResponse(data)))
+
     onAuthChange = (callback) => this.fb.auth().onAuthStateChanged(callback)
 }
 
