@@ -1,4 +1,4 @@
-import {all, put, call, takeEvery, delay, fork, spawn, cancel, cancelled} from 'redux-saga/effects'
+import {all, put, call, takeEvery, delay, fork, spawn, cancel, cancelled, race} from 'redux-saga/effects'
 import {appName} from '../../config'
 import {OrderedMap, Record} from 'immutable'
 import apiService from '../../services/api'
@@ -123,13 +123,22 @@ export const syncPeopleWithPolling = function * () {
 }
 
 export const cancalableSyncSaga = function *() {
+    yield race({
+        sync: syncPeopleWithPolling(),
+        timeout: delay(5000),
+        // stopButtonClicked: stopBtnWatcher()
+        // routeChanged: routeWatcher()
+    })
+/*
     const process = yield fork(syncPeopleWithPolling)
     yield delay(5000)
     yield cancel(process)
+*/
 }
 
 export function* saga() {
     yield spawn(cancalableSyncSaga)
+//    yield spawn(takeEvery, ADD_PERSON_REQUEST, addPersonSaga)
 
     yield all([
 //        syncPeopleWithPolling(),
