@@ -11,7 +11,7 @@ import rootSaga from './saga'
 export default () => {
     const sagaMiddleware = createSagaMiddleware()
 
-    const enhancer = applyMiddleware(sagaMiddleware, routerMiddleware(history))
+    const enhancer = applyMiddleware(sagaMiddleware, routerMiddleware(history), logger)
 
     const store = createStore(reducer, enhancer)
 

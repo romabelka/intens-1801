@@ -1,4 +1,4 @@
-import {all, put, call, takeEvery} from 'redux-saga/effects'
+import {all, put, call, takeEvery, delay, fork, spawn, cancel, cancelled} from 'redux-saga/effects'
 import {appName} from '../../config'
 import {OrderedMap, Record} from 'immutable'
 import apiService from '../../services/api'
@@ -83,7 +83,7 @@ export const addPersonSaga = function * ({ payload }) {
     yield call(apiService.addPerson, payload)
 
     yield put({
-        type: ADD_PERSON_SUCCESS,
+        type: ADD_PERSON_SUCCESS
     })
 }
 
@@ -107,9 +107,33 @@ export const fetchPeopleSaga = function * () {
     }
 }
 
+export const syncPeopleWithPolling = function * () {
+    try {
+//    let count = 0
+        while (true) {
+//        if (count++ >= 3) throw new Error('some network error')
+            yield call(fetchPeopleSaga)
+            yield delay(2000)
+        }
+    } finally {
+        if (yield cancelled()) {
+            console.log('---', 'saga has been cancelled')
+        }
+    }
+}
+
+export const cancalableSyncSaga = function *() {
+    const process = yield fork(syncPeopleWithPolling)
+    yield delay(5000)
+    yield cancel(process)
+}
+
 export function* saga() {
+    yield spawn(cancalableSyncSaga)
+
     yield all([
+//        syncPeopleWithPolling(),
         takeEvery(ADD_PERSON_REQUEST, addPersonSaga),
-        takeEvery(FETCH_PEOPLE_REQUEST, fetchPeopleSaga)
+//        takeEvery(FETCH_PEOPLE_REQUEST, fetchPeopleSaga)
     ])
 }
