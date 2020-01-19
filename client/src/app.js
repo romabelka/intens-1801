@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Route, NavLink } from 'react-router-dom'
 import AuthPage from './components/routes/auth'
 import AdminPage from './components/routes/admin'
+import TrashCan from "./components/trash";
 
 class App extends Component {
   static propTypes = {}
@@ -9,6 +10,7 @@ class App extends Component {
   render() {
     return (
       <div>
+        <TrashCan/>
         <nav>
           <ul>
             <li>

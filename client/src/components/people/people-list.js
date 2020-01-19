@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
 import {peopleListSelector, fetchPeople} from "../../redux/ducks/people";
+import PersonItem from "./person-item";
 
 export class PeopleList extends Component {
     static propTypes = {
@@ -28,7 +29,7 @@ export class PeopleList extends Component {
                             className={this.state.selectedId === person.id ? 'active-item' : ''}
                             onClick = {this.select(person.id)}
                         >
-                            {person.email}
+                            <PersonItem person={person}/>
                         </li>
                     ))
                 }

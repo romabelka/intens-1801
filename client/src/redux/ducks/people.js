@@ -20,6 +20,8 @@ export const FETCH_PEOPLE_START = `${prefix}/FETCH_PEOPLE_START`
 export const FETCH_PEOPLE_SUCCESS = `${prefix}/FETCH_PEOPLE_SUCCESS`
 export const FETCH_PEOPLE_ERROR = `${prefix}/FETCH_PEOPLE_ERROR`
 
+export const DELETE_PERSON_REQUEST = `${prefix}/DELETE_PERSON_REQUEST`
+
 export const REALTIME_PEOPLE_UPDATE = `${prefix}/REALTIME_PEOPLE_UPDATE`
 /**
  * Reducer
@@ -72,6 +74,11 @@ export const addPerson = ({ firstName, lastName, email }) => ({
 
 export const fetchPeople = () => ({
     type: FETCH_PEOPLE_REQUEST
+})
+
+export const deletePerson = (id) => ({
+    type: DELETE_PERSON_REQUEST,
+    payload: { id }
 })
 
 /**
