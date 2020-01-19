@@ -1,5 +1,5 @@
 import React from 'react'
-import EventList from "./apollo/event-list";
+import EventList from "./components/event-list";
 
 function App(props) {
     return (
