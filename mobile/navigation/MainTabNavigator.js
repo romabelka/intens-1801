@@ -4,10 +4,12 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
+import PeopleScreen from "../screens/people-screen";
 
 const HomeStack = createStackNavigator(
   {
     Home: HomeScreen,
+    people: PeopleScreen
   },
 );
 

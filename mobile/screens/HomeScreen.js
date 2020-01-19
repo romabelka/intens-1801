@@ -9,13 +9,14 @@ import {
 } from 'react-native';
 import {useStores} from "../stores";
 
-export default observer(function HomeScreen() {
+export default observer(function HomeScreen({ navigation }) {
   const { counterStore } = useStores()
 
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       <Text style={styles.text}>{counterStore.count}</Text>
-      <Button title="increment" onPress={() => counterStore.incrementCount()}/>
+      <Button title="increment" onPress={counterStore.incrementCount}/>
+      <Button title="go to people list" onPress = {() => navigation.navigate('people')}/>
     </View>
   );
 })
