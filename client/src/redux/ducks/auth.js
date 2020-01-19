@@ -1,4 +1,4 @@
-import {put, call, all, select, take, delay} from 'redux-saga/effects'
+import {put, call, all, select, take, delay, fork, cancel} from 'redux-saga/effects'
 import {appName} from '../../config'
 import {Record} from 'immutable'
 import apiService from '../../services/api'
@@ -79,6 +79,24 @@ export function signUp({email, password}) {
 /**
  * Sagas
  */
+
+function * takeEveryMy(actionType, saga, ...args) {
+    while (true) {
+        const action = yield take(actionType)
+        yield fork(saga, action, ...args)
+    }
+}
+
+function * takeLatestMy(actionType, saga, ...args) {
+    let lastSaga
+    while (true) {
+        const action = yield take(actionType)
+        if (lastSaga) {
+            yield cancel(lastSaga)
+        }
+        lastSaga = yield fork(saga, action, ...args)
+    }
+}
 
 export function * signUpSaga() {
     let tries = 0
