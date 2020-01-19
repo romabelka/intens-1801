@@ -10,6 +10,13 @@ module.exports = {
             () => resolve(events[id])
         , 500)),
     },
+    Mutation: {
+        renameEvent: (_, { id, title }) => {
+            const event = events[id]
+            event.title = title
+            return event
+        }
+    },
     Person: {
         id: ({ _id }) => _id
     },
