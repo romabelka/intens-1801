@@ -1,22 +1,24 @@
 import React from 'react';
+import {observer} from 'mobx-react'
 import {
   Platform,
   StyleSheet,
   Text,
   View,
+  Button
 } from 'react-native';
+import {useStores} from "../stores";
 
-export default function HomeScreen() {
+export default observer(function HomeScreen() {
+  const { counterStore } = useStores()
+
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text style={styles.text}>Hello World</Text>
+      <Text style={styles.text}>{counterStore.count}</Text>
+      <Button title="increment" onPress={() => counterStore.incrementCount()}/>
     </View>
   );
-}
-
-HomeScreen.navigationOptions = {
-  header: null,
-};
+})
 
 const styles = StyleSheet.create({
   container: {
