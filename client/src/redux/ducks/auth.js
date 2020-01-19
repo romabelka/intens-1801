@@ -1,4 +1,5 @@
 import {put, call, all, select, take, delay, fork, cancel} from 'redux-saga/effects'
+import {eventChannel} from 'redux-saga'
 import {appName} from '../../config'
 import {Record} from 'immutable'
 import apiService from '../../services/api'
@@ -20,6 +21,8 @@ export const SIGN_UP_LIMIT_ERROR = `${prefix}/SIGN_UP_LIMIT_ERROR`
 export const SIGN_IN_START = `${prefix}/SIGN_IN_START`
 export const SIGN_IN_SUCCESS = `${prefix}/SIGN_IN_SUCCESS`
 export const SIGN_IN_ERROR = `${prefix}/SIGN_IN_ERROR`
+
+export const SIGN_OUT = `${prefix}/SIGN_OUT`
 
 /**
  * Reducer
@@ -152,23 +155,28 @@ export function * signUpSaga() {
     }
 }
 
-export function * saga() {
-    yield all([
-        signUpSaga()
-    ])
-}
+const createAuthChannel = () => eventChannel((emit) => apiService.onAuthChange(user => emit({ user })))
 
-/**
- * Init
-**/
-
-export function init(store) {
-    apiService.onAuthChange((user) => {
+export const watchAuthChangeSaga = function * () {
+    const authChannel = yield call(createAuthChannel)
+    while (true) {
+        const { user } = yield take(authChannel)
         if (user) {
-            store.dispatch({
+            yield put({
                 type: SIGN_IN_SUCCESS,
                 payload: { user }
             })
+        } else {
+            yield put({
+                type: SIGN_OUT
+            })
         }
-    })
+    }
+}
+
+export function * saga() {
+    yield all([
+        signUpSaga(),
+        watchAuthChangeSaga()
+    ])
 }
